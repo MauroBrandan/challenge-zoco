@@ -1,0 +1,31 @@
+# ======= .NET =======
+## Build outputs
+**/bin/
+**/obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## VS Code
+.vscode/
+
+## Rider (JetBrains)
+.idea/
+
+## Secrets (nunca commitear Development con passwords reales)
+backend/**/appsettings.Development.json
+
+# ======= Node / Frontend =======
+node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+
+# ======= General =======
+.DS_Store
+Thumbs.db
+*.log
