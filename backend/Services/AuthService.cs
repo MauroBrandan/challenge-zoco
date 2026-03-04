@@ -11,15 +11,18 @@ public class AuthService : IAuthService
     private readonly IUserRepository _userRepository;
     private readonly ISessionRepository _sessionRepository;
     private readonly JwtHelper _jwtHelper;
+    private readonly int _refreshTokenExpirationDays;
 
     public AuthService(
         IUserRepository userRepository,
         ISessionRepository sessionRepository,
-        JwtHelper jwtHelper)
+        JwtHelper jwtHelper,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
         _sessionRepository = sessionRepository;
         _jwtHelper = jwtHelper;
+        _refreshTokenExpirationDays = configuration.GetValue<int>("JwtSettings:RefreshTokenExpirationDays", 7);
     }
 
     public async Task<AuthResponseDTO?> LoginAsync(LoginDTO dto)
@@ -67,6 +70,13 @@ public class AuthService : IAuthService
     {
         var session = await _sessionRepository.GetActiveByRefreshTokenAsync(refreshToken);
         if (session == null) return null;
+
+        // Validate refresh token expiration
+        if (session.FechaInicio.AddDays(_refreshTokenExpirationDays) < DateTime.UtcNow)
+        {
+            await _sessionRepository.EndSessionAsync(session);
+            return null;
+        }
 
         var user = session.User;
 
