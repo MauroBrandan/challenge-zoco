@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Models.DTOs;
 using backend.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using backend.Helpers;
 
 namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]  // /api/users
+[Authorize]
 public class UsersController : ControllerBase
 {
     private readonly IUserService _userService;
@@ -17,6 +20,7 @@ public class UsersController : ControllerBase
 
     // GET /api/users
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<IEnumerable<UserResponseDTO>>> GetAll()
     {
         var users = await _userService.GetAllUsersAsync();
@@ -27,6 +31,9 @@ public class UsersController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponseDTO>> GetById(int id)
     {
+        if (!AuthorizationHelper.IsOwnerOrAdmin(User, id))
+            return Forbid();
+
         var user = await _userService.GetUserByIdAsync(id);
         if (user == null) return NotFound();
         return Ok(user);
@@ -34,6 +41,7 @@ public class UsersController : ControllerBase
 
     // POST /api/users
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult<UserResponseDTO>> Create([FromBody] CreateUserDTO dto)
     {
         try
@@ -51,6 +59,9 @@ public class UsersController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<UserResponseDTO>> Update(int id, [FromBody] UpdateUserDTO dto)
     {
+        if (!AuthorizationHelper.IsOwnerOrAdmin(User, id))
+            return Forbid();
+
         try
         {
             var user = await _userService.UpdateUserAsync(id, dto);
@@ -65,6 +76,7 @@ public class UsersController : ControllerBase
 
     // DELETE /api/users/5
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> Delete(int id)
     {
         var deleted = await _userService.DeleteUserAsync(id);
