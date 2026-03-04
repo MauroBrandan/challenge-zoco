@@ -101,4 +101,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
+// Seed data
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate();
+    SeedData.Initialize(context);
+}
+
 app.Run();
