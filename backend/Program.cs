@@ -64,7 +64,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins(
-                "http://localhost:5173"      // Vite dev
+                "http://localhost:5173",      // Vite dev
+                "https://challenge-zoco-mb.vercel.app"      // Vite preview
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -100,11 +101,8 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
