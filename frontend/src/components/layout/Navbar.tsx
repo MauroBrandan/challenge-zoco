@@ -19,7 +19,7 @@ export default function Navbar() {
 
   const linkClass = (path: string) =>
     `px-3 py-2 rounded-lg text-sm font-medium transition ${
-      isActive(path) ? "bg-indigo-100 text-indigo-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+      isActive(path) ? "bg-primary-100 text-primary-700" : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
     }`;
 
   return (
@@ -27,8 +27,8 @@ export default function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/dashboard" className="text-lg font-bold text-indigo-600">
-              UserMgmt
+            <Link to="/dashboard" className="text-lg font-bold text-primary-600">
+              Zoco - Gestión de Usuarios
             </Link>
             <div className="hidden md:flex items-center gap-1">
               <Link to="/dashboard" className={linkClass("/dashboard")}>
@@ -48,7 +48,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <span className="text-sm text-gray-600">
               {user && getFullName(user.nombre, user.apellido)}
-              <span className="ml-1 rounded bg-indigo-100 px-1.5 py-0.5 text-xs text-indigo-700">
+              <span className="ml-1 rounded bg-primary-100 px-1.5 py-0.5 text-xs text-primary-700">
                 {user?.rol}
               </span>
             </span>

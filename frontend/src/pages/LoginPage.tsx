@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-indigo-600">UserMgmt</h1>
+          <h1 className="text-3xl font-bold text-primary-600">Zoco - Gestión de Usuarios</h1>
           <p className="mt-2 text-sm text-gray-600">Iniciá sesión para continuar</p>
         </div>
 
