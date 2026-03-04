@@ -50,3 +50,15 @@ public class UserResponseDTO
     public Role Rol { get; set; }
     public DateTime CreatedAt { get; set; }
 }
+
+public class UserDetailResponseDTO
+{
+    public int Id { get; set; }
+    public string Nombre { get; set; } = string.Empty;
+    public string Apellido { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty;
+    public Role Rol { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<EstudioResponseDTO> Estudios { get; set; } = new();
+    public List<DireccionResponseDTO> Direcciones { get; set; } = new();
+}

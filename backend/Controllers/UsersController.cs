@@ -29,12 +29,12 @@ public class UsersController : ControllerBase
 
     // GET /api/users/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserResponseDTO>> GetById(int id)
+    public async Task<ActionResult<UserDetailResponseDTO>> GetById(int id)
     {
         if (!AuthorizationHelper.IsOwnerOrAdmin(User, id))
             return Forbid();
 
-        var user = await _userService.GetUserByIdAsync(id);
+        var user = await _userService.GetUserDetailByIdAsync(id);
         if (user == null) return NotFound();
         return Ok(user);
     }
@@ -79,8 +79,15 @@ public class UsersController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> Delete(int id)
     {
-        var deleted = await _userService.DeleteUserAsync(id);
-        if (!deleted) return NotFound();
-        return NoContent();
+        try
+        {
+            var deleted = await _userService.DeleteUserAsync(id);
+            if (!deleted) return NotFound();
+            return NoContent();
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 }

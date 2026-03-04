@@ -14,6 +14,13 @@ public class UserService : IUserService
         _userRepository = userRepository;
     }
 
+    private async Task<bool> IsLastAdminAsync(int userId)
+    {
+        var users = await _userRepository.GetAllAsync();
+        var admins = users.Where(u => u.Rol == Role.Admin).ToList();
+        return admins.Count == 1 && admins[0].Id == userId;
+    }
+
     public async Task<IEnumerable<UserResponseDTO>> GetAllUsersAsync()
     {
         var users = await _userRepository.GetAllAsync();
@@ -24,6 +31,12 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetByIdAsync(id);
         return user == null ? null : MapToResponseDTO(user);
+    }
+
+    public async Task<UserDetailResponseDTO?> GetUserDetailByIdAsync(int id)
+    {
+        var user = await _userRepository.GetByIdAsync(id);
+        return user == null ? null : MapToDetailResponseDTO(user);
     }
 
     public async Task<UserResponseDTO> CreateUserAsync(CreateUserDTO dto)
@@ -64,10 +77,12 @@ public class UserService : IUserService
 
     public async Task<bool> DeleteUserAsync(int id)
     {
+        if (await IsLastAdminAsync(id))
+            throw new InvalidOperationException("No se puede eliminar al único administrador del sistema.");
+
         return await _userRepository.DeleteAsync(id);
     }
 
-    // Helper to map Entity → DTO
     private static UserResponseDTO MapToResponseDTO(User user)
     {
         return new UserResponseDTO
@@ -78,6 +93,39 @@ public class UserService : IUserService
             Email = user.Email,
             Rol = user.Rol,
             CreatedAt = user.CreatedAt
+        };
+    }
+
+    private static UserDetailResponseDTO MapToDetailResponseDTO(User user)
+    {
+        return new UserDetailResponseDTO
+        {
+            Id = user.Id,
+            Nombre = user.Nombre,
+            Apellido = user.Apellido,
+            Email = user.Email,
+            Rol = user.Rol,
+            CreatedAt = user.CreatedAt,
+            Estudios = user.Estudios.Select(e => new EstudioResponseDTO
+            {
+                Id = e.Id,
+                Institucion = e.Institucion,
+                Titulo = e.Titulo,
+                NivelEstudio = e.NivelEstudio.ToString(),
+                FechaInicio = e.FechaInicio,
+                FechaFin = e.FechaFin,
+                UserId = e.UserId
+            }).ToList(),
+            Direcciones = user.Direcciones.Select(d => new DireccionResponseDTO
+            {
+                Id = d.Id,
+                Calle = d.Calle,
+                Ciudad = d.Ciudad,
+                Estado = d.Estado,
+                Pais = d.Pais,
+                CodigoPostal = d.CodigoPostal,
+                UserId = d.UserId
+            }).ToList()
         };
     }
 }
