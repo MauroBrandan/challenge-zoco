@@ -2,7 +2,9 @@
 
 API REST para gestión de usuarios, estudios y direcciones personales. Construida con ASP.NET Core y Entity Framework Core, con autenticación JWT y control de acceso basado en roles.
 
-> **Deploy en producción:** La API está desplegada en **Azure App Service** con CI/CD automático via GitHub Actions.
+> 🚀 **Deploy en producción:** La API está desplegada en **Azure App Service** con CI/CD automático via GitHub Actions.
+
+> 📋 [Swagger UI](https://challenge-zoco-api-bzfsaccxgfhzchdg.brazilsouth-01.azurewebsites.net/swagger)
 
 ---
 
