@@ -6,6 +6,7 @@ using backend.Data;
 using backend.Helpers;
 using backend.Repositories;
 using backend.Repositories.Interfaces;
+using backend.Middleware;
 using backend.Services;
 using backend.Services.Interfaces;
 
@@ -41,10 +42,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Repositories
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISessionRepository, SessionRepository>();
+builder.Services.AddScoped<IEstudioRepository, EstudioRepository>();
+builder.Services.AddScoped<IDireccionRepository, DireccionRepository>();
 
 // Services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEstudioService, EstudioService>();
+builder.Services.AddScoped<IDireccionService, DireccionService>();
 
 // Helpers
 builder.Services.AddSingleton<JwtHelper>();
@@ -88,6 +93,8 @@ builder.Services.AddAuthentication(options =>
 // ----- Build and Middleware pipeline -----
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
